@@ -7,16 +7,12 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["WebAppJenkinsDocker/WebAppJenkinsDocker.csproj", "WebAppJenkinsDocker/"]
-RUN dotnet restore "WebAppJenkinsDocker/WebAppJenkinsDocker.csproj"
 COPY . .
-WORKDIR "/src/WebAppJenkinsDocker"
-RUN dotnet build "WebAppJenkinsDocker.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "WebAppJenkinsDocker.csproj" -c Release -o /app/publish
+RUN dotnet restore WebAppJenkinsDocker.csproj
+RUN dotnet build WebAppJenkinsDocker.csproj -c Release -o /publish/
+RUN dotnet publish WebAppJenkinsDocker.csproj -c Release -o /publish/
 
 FROM base AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=publish /src/bin/Release/net5.0/ .
 ENTRYPOINT ["dotnet", "WebAppJenkinsDocker.dll"]
