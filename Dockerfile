@@ -14,5 +14,5 @@ RUN dotnet publish WebAppJenkinsDocker.csproj -c Release -o /publish/
 
 FROM base AS final
 WORKDIR /app
-COPY --from=build /app .
+COPY --from=build /src/bin/Release/net5.0/ .
 ENTRYPOINT ["dotnet", "WebAppJenkinsDocker.dll"]
